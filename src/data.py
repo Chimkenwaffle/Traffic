@@ -62,18 +62,30 @@ def add_data(df):
     return df
 
 def load_and_prepare_driver_data(csv_path):
-    """
-    Takes the full drivers dataset (with Year, Sex, Cohort, etc.)
-    and returns a dataframe with:
-    
-    State | Licensed_Drivers_Total
-    """
     df = pd.read_csv(csv_path)
 
-    # Clean state column
-    df["State"] = df["State"].str.strip()
+    # Mapping full state name → USPS abbreviation
+    state_abbrev = {
+        "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR",
+        "California": "CA", "Colorado": "CO", "Connecticut": "CT", "Delaware": "DE",
+        "District of Columbia": "DC", "Florida": "FL", "Georgia": "GA", "Hawaii": "HI",
+        "Idaho": "ID", "Illinois": "IL", "Indiana": "IN", "Iowa": "IA",
+        "Kansas": "KS", "Kentucky": "KY", "Louisiana": "LA", "Maine": "ME",
+        "Maryland": "MD", "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN",
+        "Mississippi": "MS", "Missouri": "MO", "Montana": "MT", "Nebraska": "NE",
+        "Nevada": "NV", "New Hampshire": "NH", "New Jersey": "NJ",
+        "New Mexico": "NM", "New York": "NY", "North Carolina": "NC",
+        "North Dakota": "ND", "Ohio": "OH", "Oklahoma": "OK", "Oregon": "OR",
+        "Pennsylvania": "PA", "Rhode Island": "RI", "South Carolina": "SC",
+        "South Dakota": "SD", "Tennessee": "TN", "Texas": "TX", "Utah": "UT",
+        "Vermont": "VT", "Virginia": "VA", "Washington": "WA",
+        "West Virginia": "WV", "Wisconsin": "WI", "Wyoming": "WY"
+    }
 
-    # Group by state and sum drivers across all ages/sexes
+    # Convert full state names → abbreviations
+    df["State"] = df["State"].map(state_abbrev)
+
+    # Sum drivers across all ages & sexes
     drivers_state = (
         df.groupby("State")["Drivers"]
         .sum()
@@ -82,6 +94,7 @@ def load_and_prepare_driver_data(csv_path):
     )
 
     return drivers_state
+
 
 # does everything
 def do_data(df):
