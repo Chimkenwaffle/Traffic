@@ -1,4 +1,3 @@
-import kagglehub
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -8,35 +7,13 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score, mean_absolute_error
 from mpl_toolkits.basemap import Basemap
 
-# ============================================================
-# 1. Load data
-# ============================================================
+from src.data import get_data
+from src.data import do_data
 
-path = kagglehub.dataset_download("sobhanmoosavi/us-accidents")
-df = pd.read_csv(path + "/US_Accidents_March23.csv")
-df = df.dropna(subset=["County", "State"])
-print("Data loaded:", df.shape)
+df = get_data("sobhanmoosavi/us-accidents", "/US_Accidents_March23.csv")
 
-# ============================================================
-# 2. Feature engineering
-# ============================================================
+df = do_data(df)
 
-df["Start_Time"] = pd.to_datetime(df["Start_Time"], errors="coerce")
-df = df.dropna(subset=["Start_Time"])
-
-df["hour"] = df["Start_Time"].dt.hour
-df["dayofweek"] = df["Start_Time"].dt.dayofweek
-df["is_night"] = ((df["hour"] < 6) | (df["hour"] >= 20)).astype(int)
-df["is_weekend"] = (df["dayofweek"] >= 5).astype(int)
-
-num_cols = ["Severity", "Distance(mi)", "Temperature(F)", "Visibility(mi)", "Precipitation(in)"]
-for c in num_cols:
-    if c in df.columns:
-        df[c] = pd.to_numeric(df[c], errors="coerce")
-
-# ============================================================
-# 3. Aggregate to county-level features
-# ============================================================
 
 group_cols = ["State", "County"]
 agg_dict = {
