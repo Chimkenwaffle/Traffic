@@ -7,15 +7,15 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score, mean_absolute_error
 from mpl_toolkits.basemap import Basemap
 
-from src.data import get_data
-from src.data import do_data
+from data import get_data
+from data import do_data
 
-df = get_data("sobhanmoosavi/us-accidents", "/US_Accidents_March23.csv")
-
+df = get_data("sobhanmoosavi/us-accidents", "/US_Accidents_March23.csv", 1000000)
 df = do_data(df)
 
-
+# combines state and county
 group_cols = ["State", "County"]
+# defining how to aggregrate each data
 agg_dict = {
     "ID": "count",
     "Severity": "mean",
@@ -23,18 +23,22 @@ agg_dict = {
     "Temperature(F)": "mean",
     "Visibility(mi)": "mean",
     "Precipitation(in)": "mean",
-    "is_night": "mean",
-    "is_weekend": "mean"
+    "Is_Night": "mean",
+    "Is_Weekend": "mean"
 }
 
+# make a smaller data frame to hold data above
 cols_to_keep = list(set(group_cols + list(agg_dict.keys())))
 df_small = df[cols_to_keep].copy()
 
+# groups smaller data set into counties and states
 county_df = df_small.groupby(group_cols).agg(agg_dict).reset_index()
-county_df = county_df.rename(columns={"ID": "total_accidents"})
+# aggregates the data according to previous aggregation rules
+county_df = county_df.rename(columns={"ID": "Total_Accidents"})
+
 
 county_df = county_df.dropna(subset=["total_accidents"])
-feature_cols = [c for c in county_df.columns if c not in ["State", "County", "total_accidents"]]
+feature_cols = [c for c in county_df.columns if c not in ["State", "County", "Total_Accidents"]]
 county_df = county_df.dropna(subset=feature_cols)
 print("County data ready:", county_df.shape)
 
@@ -43,7 +47,7 @@ print("County data ready:", county_df.shape)
 # ============================================================
 
 X = county_df[feature_cols].values
-y = county_df["total_accidents"].values
+y = county_df["Total_Accidents"].values
 X_train, X_test, y_train, y_test, idx_train, idx_test = train_test_split(
     X, y, county_df.index, test_size=0.2, random_state=42
 )
@@ -75,7 +79,7 @@ county_df["risk_score"] = 100 * (all_preds - min_pred) / (max_pred - min_pred + 
 top_n = 20
 top_risk = county_df.sort_values("risk_score", ascending=False).head(top_n)
 print("\nTop 20 high-risk counties:")
-print(top_risk[["State", "County", "total_accidents", "risk_score"]])
+print(top_risk[["State", "County", "Total_Accidents", "risk_score"]])
 
 # ============================================================
 # 8. Plot US bubble map with gradient circles
