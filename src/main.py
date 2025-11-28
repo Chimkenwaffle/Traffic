@@ -2,10 +2,12 @@ import pandas as pd
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
+
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score, mean_absolute_error
 from mpl_toolkits.basemap import Basemap
+
 from dataCleaning import get_csv
 from dataCleaning import do_traffic_data
 from dataCleaning import do_driver_data
@@ -220,7 +222,7 @@ def clean(df, group_cols, agg_dict):
 
 def main():
     # Load and clean accident data
-    df = get_csv("sobhanmoosavi/us-accidents", "/US_Accidents_March23.csv", 100000000)  # Increase to 100k for better coverage
+    df = get_csv("sobhanmoosavi/us-accidents", "/US_Accidents_March23.csv", 10000)  # Increase to 100k for better coverage
     df = do_traffic_data(df)
     
     print(f"\nTotal accidents loaded: {len(df)}")
@@ -234,7 +236,7 @@ def main():
     # Load driver data (people 16+)
     print("\n=== Loading Driver Data ===")
     # Skip the header rows and use proper column names
-    drivers_df = pd.read_excel("TRAFFIC/data/counties-agegroup-2020.xlsx", skiprows=5)
+    drivers_df = pd.read_excel("../data/counties-agegroup-2020.xlsx", skiprows=5)
     print(f"Raw driver data shape: {drivers_df.shape}")
     print(f"Columns: {drivers_df.columns.tolist()}")
     print(f"First few rows:\n{drivers_df.head()}")
