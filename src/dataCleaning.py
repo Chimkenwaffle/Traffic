@@ -4,11 +4,11 @@ from datetime import datetime
 # ALL DATA CLEANING AND ADDING IN HERE
 
 # gets the data from kaggle using the path and csv
-def get_csv(path, csv, rows):    
+def get_csv(path, csv):    
     # gets the data set from kagglehub
     path = kagglehub.dataset_download(path)
     # stores it into dataframe called df
-    df = pd.read_csv(path + csv, nrows= rows)
+    df = pd.read_csv(path + csv)
     # df = pd.read_csv(path + csv)
     return df
 
