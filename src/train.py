@@ -1,3 +1,4 @@
+import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score, mean_absolute_error
 def train(nEsimator, randomState, nJobs, xTrain, yTrain, xTest, yTest):
@@ -28,3 +29,11 @@ def clean(df, group_cols, agg_dict):
     print("County data ready:", county_df.shape)
     
     return county_df, feature_cols
+def predictRisk(rf, county_df, X):
+    all_preds = rf.predict(X)
+    min_pred = all_preds.min()
+    max_pred = all_preds.max()
+    norm_preds = (all_preds - min_pred) / (max_pred - min_pred + 1e-9)
+    norm_preds = np.sqrt(norm_preds)
+    county_df["risk_score"] = norm_preds * 10
+    return None
