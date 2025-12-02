@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -236,7 +237,10 @@ def main():
     # Load driver data (people 16+)
     print("\n=== Loading Driver Data ===")
     # Skip the header rows and use proper column names
-    drivers_df = pd.read_excel("../data/counties-agegroup-2020.xlsx", skiprows=5)
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_file = os.path.join(project_root, "data", "counties-agegroup-2020.xlsx")
+
+    drivers_df = pd.read_excel(data_file)
     print(f"Raw driver data shape: {drivers_df.shape}")
     print(f"Columns: {drivers_df.columns.tolist()}")
     print(f"First few rows:\n{drivers_df.head()}")
