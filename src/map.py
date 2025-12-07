@@ -82,10 +82,6 @@ def plot_map(counties, value_column, title_text, p):
     plt.show()
 
 
-# -------------------------
-# MAP FUNCTION REWRITES
-# -------------------------
-
 def makeMap(df, county_df, title_suffix=""):
     counties = load_counties()
 
@@ -204,7 +200,6 @@ def makeMap2030PopulationGrowthPercentage(df, county_df, title_suffix=""):
              f"Predicted Population Growth % (2030) {title_suffix}", 100)
 
 def load_states():
-    """Load US state boundaries from Census Bureau"""
     url = "https://www2.census.gov/geo/tiger/GENZ2020/shp/cb_2020_us_state_5m.zip"
     states = gpd.read_file(url)
     
@@ -234,7 +229,7 @@ cmap = colors.LinearSegmentedColormap.from_list(
 
 
 def plot_state_map(states, value_column, title_text, cbar_label, p):
-    """Generic function to plot state-level choropleth maps"""
+    
     fig, ax = plt.subplots(figsize=(18, 10), dpi=60)
     
     # Base map
@@ -272,13 +267,8 @@ def plot_state_map(states, value_column, title_text, cbar_label, p):
     plt.tight_layout()
     plt.show()
 
-
-# -------------------------
-# STATE-LEVEL MAP FUNCTIONS
-# -------------------------
-
 def makeStateMapTotal(county_df, title_suffix=""):
-    """Map total accidents by state for 2020"""
+   
     states = load_states()
     
     # Aggregate county data to state level
@@ -341,7 +331,7 @@ def makeStateMap2030Total(county_df, title_suffix=""):
 
 
 def makeStateMapAccidentGrowth(county_df, title_suffix=""):
-    """Map accident growth percentage by state (2020 to 2030)"""
+    
     states = load_states()
     
     # Aggregate county data to state level
@@ -431,7 +421,6 @@ def makeBarMap2030Accidents(df, county_df, title_suffix=""):
         how="left"
     )
 
-    # ---- Create top 10 counties by predicted accidents ----
     top_n = 10
     top_risk = county_df.sort_values(
         "Predicted_2030_Accidents_Total",
@@ -545,7 +534,6 @@ def makeYearlyAccidentsPer1000Line(df, county_df, title_suffix=""):
 
     rng = np.random.default_rng(123)
 
-    # ---- Generate yearly population (non-linear increments) ----
     pop_growth = pop_2030 - pop_2020
     raw_pop_steps = rng.uniform(0.5, 1.5, size=n_steps)
     pop_steps = raw_pop_steps / raw_pop_steps.sum() * pop_growth
@@ -555,7 +543,6 @@ def makeYearlyAccidentsPer1000Line(df, county_df, title_suffix=""):
         pop_values.append(pop_values[-1] + inc)
     pop_values = np.array(pop_values)
 
-    # ---- Generate yearly accidents (non-linear increments) ----
     acc_growth = acc_2030 - acc_2020
     raw_acc_steps = rng.uniform(0.5, 1.5, size=n_steps)
     acc_steps = raw_acc_steps / raw_acc_steps.sum() * acc_growth
@@ -565,10 +552,8 @@ def makeYearlyAccidentsPer1000Line(df, county_df, title_suffix=""):
         acc_values.append(acc_values[-1] + inc)
     acc_values = np.array(acc_values)
 
-    # ---- Compute Accidents per 1,000 people ----
     acc_per_1000 = (acc_values / pop_values) * 1000
 
-    # ---- Plot ----
     plt.figure(figsize=(12, 6))
     plt.plot(years, acc_per_1000, marker="o", linewidth=2, color="#2c7fb8")
 

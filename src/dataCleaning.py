@@ -39,7 +39,7 @@ def add_data(df):
     return df
 
 def normalize_Abbreviations(df):
-    """Convert state abbreviations to full names if needed"""
+    
     state_abbrev_to_full = {
         'AL': 'Alabama', 'AK': 'Alaska', 'AZ': 'Arizona', 'AR': 'Arkansas',
         'CA': 'California', 'CO': 'Colorado', 'CT': 'Connecticut', 'DE': 'Delaware',
@@ -67,9 +67,7 @@ def normalize_Abbreviations(df):
     return df
 
 def combine_drivers_data_and_population_change(df):
-    """
-    Process driver data to calculate people 16+ by county and population change
-    """
+    
     print(f"Processing driver data with shape: {df.shape}")
     
     # Age groups for population counts
